@@ -30,7 +30,7 @@ function Kabatra.Common.HOSTS.Append-HostsFileContent
 
     if($HostsFileContent -notcontains $ContentToAppend)
     {
-        Add-Content -Path $hostsFilePath -Value $ContentToAppend
+        $ContentToAppend | Out-File -FilePath $hostsFilePath -Append -Force
     }
 }
 
@@ -46,7 +46,7 @@ function Kabatra.Common.HOSTS.Remove-HostsFileContent
     if($HostsFileContent -contains $ContentToRemove)
     {
         # Clear the HOSTS file
-        Clear-Content -Path $hostsFilePath
+        "" | Out-File -FilePath $hostsFilePath -Force
 
         $filteredContent = [System.Collections.ArrayList]@()
         foreach($line in $HostsFileContent)
@@ -59,10 +59,10 @@ function Kabatra.Common.HOSTS.Remove-HostsFileContent
             $filteredContent.Add($line) > $null;
         }
 
-        Add-Content -Path $hostsFilePath -Value $filteredContent -ErrorAction Continue -ErrorVariable setOriginalContentOnError        
-        if($setOriginalContentOnError -or $filteredContent.Count -eq 0)
+        $filteredContent | Out-File -FilePath $hostsFilePath -Force -ErrorAction Continue -ErrorVariable setOriginalContentOnError        
+        if($setOriginalContentOnError)
         {
-            Set-Content -Path $hostsFilePath -Value $HostsFileContent
+            $HostsFileContent | Out-File -FilePath $hostsFilePath -Force
             throw "There was an error, reverting any changes to HOSTS file."
         }
     }
