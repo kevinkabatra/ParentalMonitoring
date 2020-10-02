@@ -17,5 +17,3 @@
         Write-Host "Unblocking is complete"
     }
 }
-
-Kabatra.ParentalMonitoring.Invoke-Monitoring
