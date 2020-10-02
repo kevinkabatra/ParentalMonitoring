@@ -8,9 +8,9 @@
 #>
 $parentalMonitoringDirectory = $PSScriptRoot
 
-$action = New-ScheduledTaskAction -Execute "$parentalMonitoringDirectory\Kabatra.ParentalMonitor.Keep-Alive.ps1"
+$action = New-ScheduledTaskAction -Execute "C:\Windows\system32\WindowsPowerShell\v1.0\powershell.exe" –Argument “-File `"$parentalMonitoringDirectory\Kabatra.ParentalMonitor.Keep-Alive.ps1`”" -ErrorAction Stop
 $trigger = New-ScheduledTaskTrigger -AtStartup
 $user = New-ScheduledTaskPrincipal "SYSTEM"
 $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DisallowHardTerminate -DontStopIfGoingOnBatteries -Hidden
-$parentalMonitoringKeepAliveTask = New-ScheduledTask -Description "Parental Monitoring by Kevin Kabatra" -Action $action -Trigger $trigger -Principal $user -Settings $settings
+$parentalMonitoringKeepAliveTask = New-ScheduledTask -Description "Parental Monitoring by Kevin Kabatra" -Action $action -Trigger $trigger -Principal $user -Settings $settings -ErrorAction Stop
 Register-ScheduledTask -TaskName "Parental Monitoring by Kevin Kabatra" -InputObject $parentalMonitoringKeepAliveTask
