@@ -1,4 +1,16 @@
-﻿<#
+﻿function Kabatra.Private.Import-Module
+{
+    [CmdletBinding()]
+    param()
+
+    $libPath = Kabatra.ParentalMonitoring.Helpers.Get-LibPath
+    $sourcePath = Split-Path -Path $libPath -Parent
+
+    Import-Module -Name $sourceDirectory\Kabatra.ParentalMonitoring.psd1 -Verbose -Force
+}
+
+
+<#
 .SUMMARY
     This script is designed to run the Parental Monitoring application.
 .DESCRIPTION
@@ -10,13 +22,12 @@
     Date: 10/01 2020
     License: MIT. See https://opensource.org/licenses/MIT.
 #>
+Kabatra.Private.Import-Module
+
+Kabatra.ParentalMonitoring.Logging.Write-EventLogApplicationStartMessage
+
 while($true)
 {
-    $parentalMonitoringDirectory = $PSScriptRoot
-    $libDirectory = Split-Path -Path $parentalMonitoringDirectory -Parent
-    $sourceDirectory = Split-Path -Path $libDirectory -Parent
-
-    Import-Module -Name $sourceDirectory\Kabatra.ParentalMonitoring.psd1 -Verbose -Force
     Kabatra.ParentalMonitoring.Invoke-Monitoring
     
     Start-Sleep -Seconds 60
