@@ -16,13 +16,13 @@
     
     $libPath = Kabatra.ParentalMonitoring.Helpers.Get-LibPath
     $sourcePath = Split-Path -Path $libPath -Parent
-    $moduleManifest = "$sourcePath\Kabatra.ParentalMonitoring.psd1"   
+    $moduleManifest = "$sourcePath\Kabatra.ParentalMonitoring.psd1"
     if(!(Test-Path -Path $moduleManifest))
     {        
         throw "Cannot locate module manifest @: $moduleManifest."
     }
 
-    Import-Module -Name $moduleManifest -Verbose -Force -ErrorAction Stop
+    Import-Module -Name $moduleManifest -Force -ErrorAction Stop
 }
 
 function Kabatra.ParentalMonitoring.Installers.Install-ParentalMonitoring
@@ -37,8 +37,6 @@ function Kabatra.ParentalMonitoring.Installers.Install-ParentalMonitoring
 
     $libPath = Kabatra.ParentalMonitoring.Helpers.Get-LibPath
     $keepAlivePath = "$($libPath)\ParentalMonitoring\ScheduledTasks\Scripts\Kabatra.ParentalMonitoring.ScheduledTasks.Keep-Alive.ps1"
-    Write-Host "C:\Users\kevin\Desktop\ParentalMonitoring\source\lib\ParentalMonitoring\ScheduledTasks\Scripts\Kabatra.ParentalMonitoring.ScheduledTasks.Keep-Alive.ps1"
-    Write-Host $keepAlivePath
     if(!(Test-Path -Path $keepAlivePath))
     {
         throw "Cannot find keep alive."

@@ -3,12 +3,28 @@
     [CmdletBinding()]
     param()
 
+    $scriptsPath = $PSScriptRoot
+    $scheduledTasksPath = Split-Path -Path $scriptsPath -Parent
+    $parentalMonitoringPath = Split-Path -Path $scheduledTasksPath -Parent
+    $getLibPathScript = "$parentalMonitoringPath\Helpers\Kabatra.ParentalMonitoring.Helpers.Get-LibPath.ps1"
+    if(!(Test-Path -Path $getLibPathScript))
+    {
+        throw 'Cannot find commandlet to locate the lib directory.'
+    }
+    
+    # Dot source the script, so it can be accessed in this session.
+    . $getLibPathScript
+    
     $libPath = Kabatra.ParentalMonitoring.Helpers.Get-LibPath
     $sourcePath = Split-Path -Path $libPath -Parent
+    $moduleManifest = "$sourcePath\Kabatra.ParentalMonitoring.psd1"
+    if(!(Test-Path -Path $moduleManifest))
+    {        
+        throw "Cannot locate module manifest @: $moduleManifest."
+    }
 
-    Import-Module -Name $sourceDirectory\Kabatra.ParentalMonitoring.psd1 -Verbose -Force
+    Import-Module -Name $moduleManifest -Force -ErrorAction Stop
 }
-
 
 <#
 .SUMMARY

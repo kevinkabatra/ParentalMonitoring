@@ -16,4 +16,8 @@
         Kabatra.Common.HOSTS.Enable-Website -WebsiteToEnable $configuration.blockListWebsites
         Write-Host "Unblocking is complete"
     }
+
+    # Flush the DNS to allow any updates to the HOSTS file to take immediate effect
+    $flushDnsCommand = "ipconfig /flushdns"
+    Invoke-Expression -Command $flushDnsCommand
 }
