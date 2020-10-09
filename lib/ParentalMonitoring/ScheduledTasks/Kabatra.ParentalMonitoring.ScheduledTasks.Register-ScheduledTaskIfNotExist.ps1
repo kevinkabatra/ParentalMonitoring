@@ -13,7 +13,22 @@
     $user = New-ScheduledTaskPrincipal "SYSTEM"
     $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DisallowHardTerminate -DontStopIfGoingOnBatteries -Hidden
     $parentalMonitoringKeepAliveTask = New-ScheduledTask -Action $action -Trigger $trigger -Principal $user -Settings $settings
-    Register-ScheduledTask -TaskName $applicationName -InputObject $parentalMonitoringKeepAliveTask -ErrorAction Stop
+    
+    $newScheduledTask = Register-ScheduledTask -TaskName $applicationName -InputObject $parentalMonitoringKeepAliveTask -ErrorAction Stop
+    return $newScheduledTask
+
+}
+
+function Kabatra.Private.Start-ScheduledTask
+{
+    [CmdletBinding()]
+    param
+    (
+        $ScheduledTask
+    )
+
+    Start-ScheduledTask -InputObject $ScheduledTask
+    Kabatra.ParentalMonitoring.Logging.Write-EventLogStartScheduledTask
 }
 
 <#
@@ -31,14 +46,16 @@ function Kabatra.ParentalMonitoring.ScheduledTasks.Register-ScheduledTaskIfNotEx
 
     $applicationName = Kabatra.ParentalMonitoring.Helpers.Get-ApplicationName -ErrorAction Stop
 
-    $doesScheduleTaskExist = Get-ScheduledTask -TaskName $applicationName
-    if($doesScheduleTaskExist -eq $null)
+    $parentalMonitoringTask = Get-ScheduledTask -TaskName $applicationName
+    if($parentalMonitoringTask -eq $null)
     {
-        Kabatra.Private.Register-ScheduledTask
+        $parentalMonitoringTask = Kabatra.Private.Register-ScheduledTask
         Kabatra.ParentalMonitoring.Logging.Write-EventLogRegisteredScheduledTask
     }
     else
     {
         Kabatra.ParentalMonitoring.Logging.Write-EventLogScheduledTaskExists
     }
+
+    Kabatra.Private.Start-ScheduledTask -ScheduledTask $parentalMonitoringTask
 }

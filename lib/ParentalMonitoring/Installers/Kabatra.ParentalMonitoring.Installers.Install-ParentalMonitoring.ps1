@@ -35,15 +35,5 @@ function Kabatra.ParentalMonitoring.Installers.Install-ParentalMonitoring
     Kabatra.ParentalMonitoring.ScheduledTasks.Register-ScheduledTaskIfNotExist
     Kabatra.ParentalMonitoring.Logging.New-EventLogIfNotExist
     
-    # Report that installation has been completed. Then start the Keep-Alive script, which keeps the session running so we cannot execute code afterwards.
     Kabatra.ParentalMonitoring.Logging.Write-EventLogInstallationComplete
-
-    $libPath = Kabatra.ParentalMonitoring.Helpers.Get-LibPath
-    $keepAlivePath = "$($libPath)\ParentalMonitoring\ScheduledTasks\Scripts\Kabatra.ParentalMonitoring.ScheduledTasks.Keep-Alive.ps1"
-    if(!(Test-Path -Path $keepAlivePath))
-    {
-        throw "Cannot find keep alive."
-    }
-
-    Invoke-Expression -Command "$keepAlivePath"
 }
