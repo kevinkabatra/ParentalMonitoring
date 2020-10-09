@@ -3,8 +3,13 @@
     [CmdletBinding()]
     param()
 
-    $action = New-ScheduledTaskAction -Execute "C:\Windows\system32\WindowsPowerShell\v1.0\powershell.exe" –Argument “-File `"$($PSScriptRoot)\Kabatra.ParentalMonitor.Keep-Alive.ps1`”"
-    $trigger = New-ScheduledTaskTrigger -AtStartup
+    $keepAliveDirectory = "$($PSScriptRoot)\Scripts"
+    # Need to concatenate the string this way to avoid PowerShell from adding a hidden character instead of `" at the very end of the string.
+    # See: https://windowsserver.uservoice.com/forums/301869-powershell/suggestions/41580937-new-scheduledtaskaction-adds-wrong-characters-to-a
+    $powerShellArguments = "-ExecutionPolicy Bypass -File `"$($keepAliveDirectory)\Kabatra.ParentalMonitoring.ScheduledTasks.Keep-Alive.ps1" + '"'
+    $action = New-ScheduledTaskAction -Execute "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" –Argument $powerShellArguments
+    
+    $trigger = New-ScheduledTaskTrigger -AtLogOn
     $user = New-ScheduledTaskPrincipal "SYSTEM"
     $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DisallowHardTerminate -DontStopIfGoingOnBatteries -Hidden
     $parentalMonitoringKeepAliveTask = New-ScheduledTask -Action $action -Trigger $trigger -Principal $user -Settings $settings

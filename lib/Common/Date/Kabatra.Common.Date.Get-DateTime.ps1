@@ -51,7 +51,7 @@ function Kabatra.Common.Date.Get-DateTime
     $lookupMethod = [LookupMethods]::zone
 
     $getTimeRequest = "$($getTimeUrl)?key=$($ApiKey)&format=$($returnFormat)&by=$($lookupMethod)&zone=$timeZoneName"
-    $getTimeResponse = Invoke-WebRequest $getTimeRequest
+    $getTimeResponse = Invoke-WebRequest $getTimeRequest -UseBasicParsing
     if($getTimeResponse.StatusCode -ne "200")
     {
         throw "Unable to get time."    
