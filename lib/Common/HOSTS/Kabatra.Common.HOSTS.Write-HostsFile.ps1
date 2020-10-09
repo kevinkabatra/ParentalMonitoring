@@ -120,7 +120,4 @@ function Kabatra.Common.HOSTS.Write-HostsFile
     {
         throw "Operation not supported."
     }
-
-    $flushDnsCommand = "ipconfig /flushdns"
-    Invoke-Expression -Command $flushDnsCommand
 }

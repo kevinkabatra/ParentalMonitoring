@@ -6,16 +6,27 @@
     $isBlockedByTime = Kabatra.ParentalMonitoring.Get-IsBlockedByTime -BlockWebsiteTimeStart $configuration.blockWebsiteTimeStart -BlockWebsiteTimeStop $configuration.blockWebsiteTimeStop -ApiKey $configuration.apiKey -ErrorAction Stop
     if($isBlockedByTime)
     {
-        Write-Host "Blocking websites as specified in the configuration file."
+        Write-Verbose "Blocking websites as specified in the configuration file."
+        
         Kabatra.Common.HOSTS.Disable-Website -WebsiteToBlock $configuration.blockListWebsites
-        Write-Host "Blocking is complete"
+        
+        Write-Verbose "Blocking is complete"
+        Kabatra.ParentalMonitoring.Logging.Write-EventLogBlockingSites
     }
     else
     {
-        Write-Host "Unblocking websites as specified in the configuration file."
+        Write-Verbose "Unblocking websites as specified in the configuration file."
+        
         Kabatra.Common.HOSTS.Enable-Website -WebsiteToEnable $configuration.blockListWebsites
-        Write-Host "Unblocking is complete"
+        
+        Write-Verbose "Unblocking is complete"
+        Kabatra.ParentalMonitoring.Logging.Write-EventLogUnblockingSites
     }
-}
 
-Kabatra.ParentalMonitoring.Invoke-Monitoring
+    # Flush the DNS to allow any updates to the HOSTS file to take immediate effect
+    $flushDnsCommand = "ipconfig /flushdns"
+    Invoke-Expression -Command $flushDnsCommand > $null
+
+    Write-Verbose "DNS has been flushed."
+    Kabatra.ParentalMonitoring.Logging.Write-EventLogDnsFlushed
+}
